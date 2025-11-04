@@ -1,4 +1,5 @@
 from astropy.io import fits
+from matplotlib.pylab import f
 import numpy as np
 import scipy as sp
 import os 
@@ -61,7 +62,15 @@ def crop_to_mask(image_data,labels_matrix,largest_index):
     return image_data,resized_img
 
 
-def load_data(star,image_type,clustering_method):
+def read_image_ew(path):
+    image_data=fits.getdata(path, ext=0)
+    image_data=np.nan_to_num(image_data , nan=0, posinf=0, neginf=0)
+    image_data[image_data<0]=0
+    return image_data
+
+
+
+def load_data(star,image_type):
     mhd_bands = [
         "Fe L",
         "Mg tot",
@@ -165,26 +174,65 @@ def load_data(star,image_type,clustering_method):
             "Ni XXVI"
         ]
     }
-    
-    if "ALL" not in star:
-        if "MHD" in star:
+    bands = []
+    if star=="ALL_MHD":
+        if (image_type == "EW MAPS"):
+            bands = []
+        else:
             bands = mhd_bands
+    elif ("MHD" in star and "ALL" not in star):
+        if (image_type == "EW MAPS"):
+            bands = []
+        else:
+            bands = mhd_bands
+    else:
+        if (image_type == "EW MAPS"):
+            bands = []
         else:
             bands = sn_bands[star]
-        
-        mask_path = f"data/{image_type}/{star}/mask_{star}.fits"
-        folder = os.path.join("data", image_type, star, "images")
-        images = []
-        flattened_images = []
-        for imname in sorted(os.listdir(folder)):
-            img_path = os.path.join(folder, imname)
-            image = read_image(img_path)
-            labels,largest_index = countor_mask(mask_path)
-            masked_image,masked_image_square = crop_to_mask(image, labels, largest_index) 
-            im = Image.fromarray(masked_image_square).resize(img_size)
-            images.append(np.array(im))
-            flattened_images.append(masked_image_square.flatten())
-    else:
-        pass
     
+    
+        
+    mask_path = f"data/{image_type}/{star}/mask_{star}.fits"
+    folder = os.path.join("data", image_type, star, "images")
+    images = []
+    flattened_images = []
+    for imname in sorted(os.listdir(folder)):
+        img_path = os.path.join(folder, imname)
+        if (image_type == "EW MAPS"):
+            image = read_image_ew(img_path)
+            if ("MHD" in star):
+                band = imname.split("_ew.fits")[0].split("_")[1]
+            else:
+                band = imname.split("_ew.fits")[0].split("_")[0]
+            bands.append(band)
+        else:
+            image = read_image(img_path)
+        labels,largest_index = countor_mask(mask_path)
+        masked_image,masked_image_square = crop_to_mask(image, labels, largest_index) 
+        im = Image.fromarray(masked_image_square).resize(img_size)
+        images.append(np.array(im))
+        flattened_images.append(np.array(im).flatten())
+    flattened_images = np.array(flattened_images)
     return images,flattened_images,bands
+
+
+
+
+
+def load_all_mhd(image_type):
+    images, flattened_images, bands = [], [], []
+    stars = ["CAS_A_MHD", "G292_MHD", "KEPLER_MHD", "TYCHO_MHD", "W49B_MHD"]
+
+    for star in stars:
+        i, fi, b = load_data(star, image_type)
+        
+        images.extend(i)
+        flattened_images.extend(fi)
+        text_bands = [f"{star} - {band}" for band in b]
+        bands.extend(text_bands)
+
+    images = np.array(images)
+    flattened_images = np.array(flattened_images)
+    
+    return images, flattened_images, bands
