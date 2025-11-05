@@ -1,0 +1,15 @@
+Tycho's SNR Energy bands
+
+Band (keV)	Line/Continuum
+1.26-1.42	Mg XI
+1.62-2.10	Si Total
+2.10-2.26	Si XIII 2
+2.26-2.72	S Total
+2.72-2.97	S XV 2
+2.97-3.35	Ar Total
+3.50-4.10	Ca Total
+4.10-5.30	cont 1
+5.30-5.72	cont/Cr
+5.72-6.11	cont/Mg
+6.11-6.88	Fe XXV
+6.88-8.40	cont 2

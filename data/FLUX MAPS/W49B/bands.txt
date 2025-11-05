@@ -1,0 +1,26 @@
+W49B Energy bands
+
+Band (keV)	Line/Continuum
+1.69-1.92	Si XII
+1.92-2.09	Si XIV
+1.69-2.09	Si Total
+2.10-2.27	cont 1
+2.27-2.54	S XV
+2.54-2.74	S XVI
+2.27-2.74	S Total
+2.74-2.97	S XV 2
+2.97-3.22	Ar XVII
+3.22-3.43	Ar XVIII
+2.97-3.43	Ar Total
+3.43-3.73	cont 2
+3.73-4.02	Ca XIX
+4.01-4.30	Ca XX
+3.73-4.30	Ca Total
+4.30-4.70	cont 3
+4.70-5.00	cont/Ti
+5.00-5.45	cont 4
+5.45-5.80	cont/Cr
+5.80-6.35	cont 5
+6.35-6.91	Fe XXV
+6.91-7.40	cont 6
+7.40-8.00	Ni XXVI

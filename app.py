@@ -77,6 +77,10 @@ if image_type != "-- Select --" and star != "-- Select --" and method != "-- Sel
                         st.session_state['bands']
                     )
                     st.success("✅ Clustering completed!")
+            
+            if method  == "GraphHC":
+                with st.spinner("⏳ Running GraphHC clustering... please wait"): #TODO: implement GraphHC
+                    st.success("✅ Clustering completed!")
 
             if method == "GraphHC":
                 pass

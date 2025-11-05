@@ -1,0 +1,22 @@
+Cas A Energy bands
+
+Band (keV)	Line/Continuum
+1.25-1.42	Mg_XI
+1.42-1.55	Mg_XII
+1.69-1.96	Si_XIII
+1.96-2.12	Si_XIV
+2.12-2.24	Si_XIII_2
+2.24-2.56	S_XV
+2.56-2.74	S_XVI
+2.74-2.98	S_XV_2
+2.98-3.28	Ar_XVII
+3.75-4.05	Ca_XIX
+4.05-4.20	Ca_XX
+4.20-4.60	cont_1
+4.60-4.85	cont_2/Ti
+4.85-5.50	cont_3
+5.50-5.80	cont_4/Cr
+5.80-6.30	cont_5/Mg
+6.30-6.95	Fe_XXV
+6.95-7.45	cont_6
+7.45-8.00	Ni_XXVI

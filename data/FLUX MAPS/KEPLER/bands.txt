@@ -1,0 +1,17 @@
+Kepler's SNR Energy Bands
+
+Band (keV)	Line/continuum
+1.49-1.63	cont 1
+1.64-2.03	Si XIII
+2.03-2.08	cont 2
+2.08-2.27	Si XIII 2
+2.27-2.59	S XV
+2.61-2.70	cont 3
+2.73-2.97 	S XV 2
+2.97-3.29	Ar XVII
+3.30-3.50	cont 4
+3.51-4.00	Ca XIX
+4.00-5.00	cont 5
+5.00-6.00	cont/CrMg
+6.00-6.89	Fe XXV
+6.89-8.00	cont 6
