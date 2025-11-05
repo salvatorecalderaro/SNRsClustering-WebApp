@@ -1,9 +1,14 @@
 
+import select
+from cv2 import stylization
+from networkx import visibility_graph
+from requests import session
 import streamlit as st
 from load_data import *
 from plot_utils import plot_images_grid_arrays
 import CosHC
 import SVHC
+import GraphHC
 import io
 
 AVILABLE_STARS = ["CAS_A","CAS_A_MHD","G292","G292_MHD","KEPLER","KEPLER_MHD","TYCHO","TYCHO_MHD","W49B","W49B_MHD","ALL_MHD"]
@@ -32,13 +37,12 @@ with col2:
 with col3:
     method = st.selectbox("Method", ["-- Select --"] + CLUSTERING_METHODS,index=0, key="method")
 
-
 if image_type != "-- Select --" and star != "-- Select --" and method != "-- Select --":
         st.session_state['selected_star'] = star
         st.session_state['selected_image_type'] = image_type
         st.session_state['selected_method'] = method
         
-        if st.button("Start Analysis") or "clust_plot" in st.session_state:
+        if st.button("Start Analysis") or "clust_plot" in st.session_state or "k" in st.session_state:
             st.subheader(f"{star} - {image_type} - {method}")
             
             if(star == "ALL_MHD"):
@@ -78,37 +82,68 @@ if image_type != "-- Select --" and star != "-- Select --" and method != "-- Sel
                     )
                     st.success("✅ Clustering completed!")
             
-            if method  == "GraphHC":
-                with st.spinner("⏳ Running GraphHC clustering... please wait"): #TODO: implement GraphHC
-                    st.success("✅ Clustering completed!")
-
             if method == "GraphHC":
-                pass
+                # Inizializza lo stato, se non esiste
+                if 'run_graphhc' not in st.session_state:
+                    st.session_state['run_graphhc'] = False
 
-            
-            buf = io.BytesIO()
+                # Selezione del valore di k (menu a tendina)
+                st.info("Select the value of neasrest neighbors k for the graph construction")
+                k = st.selectbox(
+                    "Select the value of k:",
+                    options=[2, 3, 4, 5, 6],
+                    index=1
+                )
+                st.session_state['k'] = k
+                # Pulsante per avviare il clustering
+                if st.button("✅ Run GraphHC"):
+                    st.session_state['run_graphhc'] = True  # attiva il flag
 
-            if method == "CosHC":
-                st.session_state['clust_plot'].write_image(buf, format="png", height=800, width=1200, scale=5)
-            elif method == "SVHC":
-                st.session_state['clust_plot'].savefig(buf, format='png', dpi=150, bbox_inches='tight')
+                # Se il pulsante è stato premuto, esegui GraphHC
+                if st.session_state['run_graphhc']:
+                    with st.spinner(f"⏳ Running GraphHC clustering with k = {k}... please wait"):
+                        nx_graph,st.session_state['graph'] = GraphHC.create_graph(
+                            st.session_state["bands"],
+                            st.session_state["flattened_images"],
+                            k,
+                            st.session_state["selected_star"]
+                        )
+                        g = st.session_state['graph']
+                        st.success(f"Graph with {nx_graph.number_of_nodes()} nodes and {nx_graph.number_of_edges()} edges created!")
+                        GraphHC.plot_graph(nx_graph,st.session_state["selected_star"],k)
+                        with st.spinner("⏳ Running GraphHC clustering... please wait"):
+                            st.session_state['clust_plot'] = GraphHC.clusterize(st.session_state["selected_star"],st.session_state["selected_image_type"],st.session_state["graph"],k)
+                            st.success(f"✅ Clustering completed with k = {k}!")
 
-            buf.seek(0)
-            st.download_button(
-                label="📥 Download Plot",
-                data=buf,
-                file_name=f"{st.session_state['selected_star']}_{st.session_state['selected_image_type']}.png",
-                mime="image/png"
-            )
+            if "clust_plot" in st.session_state or (method == "GraphHC" and "graph" in st.session_state):      
+                buf = io.BytesIO()
 
-            if st.button("🆕 New Analysis"):            
-                for key in ['selected_star','selected_image_type','selected_method',
-                            'images','flattened_images','bands','plot','clust_plot']:
-                    if key in st.session_state:
-                        del st.session_state[key]
-                
-                st.rerun()
-                
+                if method == "CosHC":
+                    filename = f"{st.session_state['selected_star']}_{st.session_state['selected_image_type']}_{st.session_state['selected_method']}.png"
+                    st.session_state['clust_plot'].write_image(buf, format="png", height=800, width=1200, scale=5)
+                elif method == "SVHC":
+                    filename = f"{st.session_state['selected_star']}_{st.session_state['selected_image_type']}_{st.session_state['selected_method']}.png"
+                    st.session_state['clust_plot'].savefig(buf, format='png', dpi=150, bbox_inches='tight')
+                elif method == "GraphHC":
+                    filename = f"{st.session_state['selected_star']}_{st.session_state['selected_image_type']}_{st.session_state['selected_method']}_{st.session_state['k']}.png"
+                    st.session_state['clust_plot'].write_image(buf, format="png", height=800, width=1200, scale=5)
+
+                buf.seek(0)
+                st.download_button(
+                    label="📥 Download Plot",
+                    data=buf,
+                    file_name=filename,
+                    mime="image/png"
+                )
+
+                if st.button("🆕 New Analysis"):            
+                    for key in ['selected_star','selected_image_type','selected_method',
+                                'images','flattened_images','bands','plot','clust_plot','k','graph']:
+                        if key in st.session_state:
+                            del st.session_state[key]
+                    
+                    st.rerun()
+                    
 
 else:
     st.warning("Please select a Supernova, an Image Type and a Method.")
