@@ -122,7 +122,6 @@ def create_graph(bands,embeddings,k,sn):
         for j in indices[i][1:]:    
             G.add_edge(i, j)
     
-    print(f"Graph with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges created!")
 
     #visualize_graph(G,sn,k)
     data = from_networkx(G)
@@ -150,7 +149,6 @@ def train_model(model, data, patience=5, max_epochs=50):
         loss.backward()
         optimizer.step()
 
-        print(f"Epoch {epoch+1}, Loss: {loss.item():.4f}")
         
         if loss.item() < best_loss - 1e-4:  # consideriamo miglioramento minimo
             best_loss = loss.item()
@@ -160,7 +158,6 @@ def train_model(model, data, patience=5, max_epochs=50):
             epochs_no_improve += 1
 
         if epochs_no_improve >= patience:
-            print(f"Early stopping at epoch {epoch+1}")
             break
         
     if best_state_dict is not None:

@@ -128,7 +128,7 @@ if image_type != "-- Select --" and star != "-- Select --" and method != "-- Sel
         if st.session_state["clust_plot"] is not None:
             st.markdown("### 🌳 Dendrogram / Clustering Result")
             if (method == "CosHC" or method == "GraphHC"):
-                st.plotly_chart(st.session_state["clust_plot"])
+                st.plotly_chart(st.session_state["clust_plot"],width="stretch")
             else:
                 st.pyplot(st.session_state["clust_plot"])
 
