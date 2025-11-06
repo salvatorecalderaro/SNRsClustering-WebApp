@@ -28,13 +28,4 @@ def clusterize(sn, image_type, method, images, bands):
         "scrollZoom": False,
         "responsive": True
     }
-
-    # ✅ Streamlit options must stay OUTSIDE config
-    st.plotly_chart(
-        fig,
-        config=plotly_config,
-        width="stretch",
-        key=str(uuid.uuid4())
-    )
-
     return fig

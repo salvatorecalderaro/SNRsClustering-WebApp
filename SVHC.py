@@ -361,5 +361,4 @@ def clusterize(sn, image_type, images, bands):
         metric="inner_product",
         tau_m=50,
         size_tick=0.05)
-    streamlit.pyplot(fig)
     return fig

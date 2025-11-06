@@ -199,19 +199,4 @@ def clusterize(sn, image_type, data,k):
 
 
     fig.update_xaxes(tickangle=45, tickfont=dict(size=16))
-
-    plotly_config = {
-        "displayModeBar": False,
-        "scrollZoom": False,
-        "responsive": True
-    }
-
-    # ✅ Streamlit options must stay OUTSIDE config
-    st.plotly_chart(
-        fig,
-        config=plotly_config,
-        width="stretch",
-        key=str(uuid.uuid4())
-    )
-    
     return fig
