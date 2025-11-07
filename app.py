@@ -11,7 +11,31 @@ IMAGE_TYPES = ["FLUX MAPS", "EW MAPS"]
 CLUSTERING_METHODS = ["SVHC","CosHC","GraphHC"]
 
 st.set_page_config(page_title="SNRs Clustering", layout="wide")
+
+st.image("banner.png", width=900)
+st.markdown(
+    """
+    <div style="
+        background-color: #f0f4ff;
+        border-left: 6px solid #1E3D59;
+        padding: 1em;
+        margin-top: 10px;
+        border-radius: 8px;
+        font-size: 17px;
+    ">
+        💡 <strong>For more information about the project</strong>, visit the 
+        <a href="https://tecla.unipa.it" target="_blank" style="color:#1E3D59; text-decoration:none; font-weight:bold;">
+            official webpage.
+        </a>.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.image("logo.png", width=400)
+
 st.title("SNRs Clustering")
+
 
 st.markdown("""
 **Clustering Methods:**
